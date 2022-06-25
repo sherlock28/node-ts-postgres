@@ -23,8 +23,11 @@ const getUserById = async (req: Request, res: Response): Promise<Response> => {
 	return res.status(Http.OK).json(serviceResponse.JSON());
 };
 
-const createUser = (_req: Request, res: Response) => {
-	return res.json({ msg: "create user" });
+const createUser = async (req: Request, res: Response): Promise<Response> => {
+	const { fullname, username, email } = req.body;
+	const queryResponse: QueryResult = await pool.query(`INSERT INTO users(fullname, username, email) VALUES('${fullname}', '${username}', '${email}') RETURNING *`);
+	const serviceResponse = new ServiceResponse(queryResponse.rows, true, "User created successfully.", null);
+	return res.status(Http.OK).json(serviceResponse.JSON());
 };
 
 const updateUser = (_req: Request, res: Response) => {
