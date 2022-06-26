@@ -30,8 +30,11 @@ const createUser = async (req: Request, res: Response): Promise<Response> => {
 	return res.status(Http.OK).json(serviceResponse.JSON());
 };
 
-const updateUser = (_req: Request, res: Response) => {
-	return res.json({ msg: "update user" });
+const updateUser = async (req: Request, res: Response): Promise<Response> => {
+	const { fullname, username } = req.body;
+	const queryResponse: QueryResult = await pool.query("UPDATE users SET fullname=$1, username=$2 WHERE id=$3 RETURNING *", [fullname, username, +req.params.id]);
+	const serviceResponse = new ServiceResponse(queryResponse.rows, true, "User updated successfully.", null);
+	return res.status(Http.OK).json(serviceResponse.JSON());
 };
 
 const deleteUser = async (req: Request, res: Response): Promise<Response> => {
