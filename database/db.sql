@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS users(
   email TEXT
 );
 
-INSERT INTO users(fullname, username, email) VALUES('Sherlock Holmes','sherlock28','sherlockh@gmail.com');
+INSERT INTO users(fullname, username, email) VALUES('Sherlock Holmes','sherlockh','sherlockh@gmail.com');
 INSERT INTO users(fullname, username, email) VALUES('John Watson','watson','drwatson@gmail.com');
 INSERT INTO users(fullname, username, email) VALUES('James Moriarty','jmoriarty','drjmoriarty@gmail.com');
+INSERT INTO users(fullname, username, email) VALUES('Mycroft Holmes','mycrofth','mycroftholmes@gmail.com');
