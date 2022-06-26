@@ -17,7 +17,7 @@ const getAllUser = async (_req: Request, res: Response): Promise<Response> => {
 };
 
 const getUserById = async (req: Request, res: Response): Promise<Response> => {
-	const queryResponse: QueryResult = await pool.query(`SELECT * FROM users WHERE id=${req.params.id}`);
+	const queryResponse: QueryResult = await pool.query('SELECT * FROM users WHERE id=$1', [+req.params.id]);
 	const message = queryResponse.rowCount === 0 ? "User not found." : "User obtained successfully."
 	const serviceResponse = new ServiceResponse(queryResponse.rows, true, message, null);
 	return res.status(Http.OK).json(serviceResponse.JSON());
@@ -25,7 +25,7 @@ const getUserById = async (req: Request, res: Response): Promise<Response> => {
 
 const createUser = async (req: Request, res: Response): Promise<Response> => {
 	const { fullname, username, email } = req.body;
-	const queryResponse: QueryResult = await pool.query(`INSERT INTO users(fullname, username, email) VALUES('${fullname}', '${username}', '${email}') RETURNING *`);
+	const queryResponse: QueryResult = await pool.query("INSERT INTO users(fullname, username, email) VALUES($1, $2, $3) RETURNING *", [fullname, username, email]);
 	const serviceResponse = new ServiceResponse(queryResponse.rows, true, "User created successfully.", null);
 	return res.status(Http.OK).json(serviceResponse.JSON());
 };
@@ -34,8 +34,10 @@ const updateUser = (_req: Request, res: Response) => {
 	return res.json({ msg: "update user" });
 };
 
-const deleteUser = (_req: Request, res: Response) => {
-	return res.json({ msg: "delte user" });
+const deleteUser = async (req: Request, res: Response): Promise<Response> => {
+	await pool.query('DELETE FROM users WHERE id=$1', [+req.params.id]);
+	const serviceResponse = new ServiceResponse(null, true, "successfully deleted user.", null);
+	return res.status(Http.OK).json(serviceResponse.JSON());
 };
 
 export {
